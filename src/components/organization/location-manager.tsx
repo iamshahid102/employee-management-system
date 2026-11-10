@@ -1,7 +1,7 @@
 "use client";
 
 import { Pencil, Plus } from "lucide-react";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useState } from "react";
 
 import { deleteLocationAction, saveLocationAction } from "@/actions/organization";
 import { ConfirmAction } from "@/components/confirm-action";
@@ -36,11 +36,17 @@ const INITIAL: ActionState = { status: "idle" };
 export function LocationManager({ locations }: { locations: WorkLocation[] }) {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<WorkLocation | null>(null);
-  const [state, formAction] = useActionState(saveLocationAction, INITIAL);
 
-  useEffect(() => {
-    if (state.status === "success") setOpen(false);
-  }, [state]);
+  const submitLocation = async (
+    previous: ActionState,
+    formData: FormData,
+  ): Promise<ActionState> => {
+    const result = await saveLocationAction(previous, formData);
+    if (result.status === "success") setOpen(false);
+    return result;
+  };
+
+  const [state, formAction] = useActionState(submitLocation, INITIAL);
 
   return (
     <div className="space-y-4">

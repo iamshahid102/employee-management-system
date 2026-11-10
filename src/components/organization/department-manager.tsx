@@ -1,7 +1,7 @@
 "use client";
 
 import { Pencil, Plus } from "lucide-react";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useState } from "react";
 
 import {
   deleteDepartmentAction,
@@ -9,7 +9,7 @@ import {
 } from "@/actions/organization";
 import { ConfirmAction } from "@/components/confirm-action";
 import { SubmitButton } from "@/components/submit-button";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -20,7 +20,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -47,11 +46,17 @@ const INITIAL: ActionState = { status: "idle" };
 export function DepartmentManager({ departments }: { departments: Department[] }) {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Department | null>(null);
-  const [state, formAction] = useActionState(saveDepartmentAction, INITIAL);
 
-  useEffect(() => {
-    if (state.status === "success") setOpen(false);
-  }, [state]);
+  const submitDepartment = async (
+    previous: ActionState,
+    formData: FormData,
+  ): Promise<ActionState> => {
+    const result = await saveDepartmentAction(previous, formData);
+    if (result.status === "success") setOpen(false);
+    return result;
+  };
+
+  const [state, formAction] = useActionState(submitDepartment, INITIAL);
 
   const names = new Map(departments.map((department) => [department.id, department.name]));
 
@@ -137,7 +142,6 @@ export function DepartmentManager({ departments }: { departments: Department[] }
       )}
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger className="hidden" aria-hidden />
         <DialogContent>
           <DialogHeader>
             <DialogTitle>

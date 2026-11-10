@@ -14,7 +14,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import type { ActionState } from "@/lib/errors";
 import {
   EMPLOYMENT_STATUS_LABELS,
@@ -380,7 +379,6 @@ export function EmployeeForm({
         </p>
       </div>
 
-      <Textarea className="hidden" aria-hidden tabIndex={-1} readOnly value="" />
     </form>
   );
 }

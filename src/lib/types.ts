@@ -145,9 +145,14 @@ export interface ImportRowPayload {
   first_name: string;
   last_name: string;
   work_email: string;
+  personal_email: string | null;
+  phone: string | null;
   job_title: string | null;
-  department: string | null;
-  location: string | null;
+  department_id: string | null;
+  department_name: string | null;
+  location_id: string | null;
+  location_name: string | null;
+  manager_id: string | null;
   manager_employee_number: string | null;
   employment_type: EmploymentType;
   status: EmploymentStatus;

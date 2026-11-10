@@ -3,7 +3,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { reactivateEmployeeAction } from "@/actions/employees";
 import { DeactivateDialog } from "@/components/employees/deactivate-dialog";
+import { SubmitButton } from "@/components/submit-button";
 import { StatusBadge } from "@/components/status-badge";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -141,6 +143,14 @@ export default async function EmployeeDetailPage({
               employeeId={employee.id}
               employeeName={`${employee.first_name} ${employee.last_name}`}
             />
+          ) : null}
+          {session.permissions.can_manage_employees && isInactive ? (
+            <form action={reactivateEmployeeAction}>
+              <input type="hidden" name="employeeId" value={employee.id} />
+              <SubmitButton variant="outline" pendingLabel="Reactivating…">
+                Reactivate
+              </SubmitButton>
+            </form>
           ) : null}
         </div>
       </div>

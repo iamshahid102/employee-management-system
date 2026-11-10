@@ -57,8 +57,8 @@ export function nextAnniversary(startDate: string, today: Date = todayUtc()): An
   };
 }
 
-/** Whole days between an ISO date and today (negative for past dates). */
+/** Whole days from an ISO date until today: positive in the past, negative in the future. */
 export function daysSince(value: string, today: Date = todayUtc()): number {
   const base = todayUtc(today);
-  return Math.round((parseIsoDate(value).getTime() - base.getTime()) / MS_PER_DAY);
+  return Math.round((base.getTime() - parseIsoDate(value).getTime()) / MS_PER_DAY);
 }

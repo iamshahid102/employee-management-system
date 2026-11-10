@@ -8,13 +8,11 @@ import { createClient } from "@/lib/supabase/server";
 import { displayNameSchema } from "@/lib/validation/auth";
 import { fieldErrors, firstError, formString } from "@/lib/validation/form";
 
-const INITIAL: ActionState = { status: "idle" };
-
 export async function updateDisplayNameAction(
-  _previous: ActionState = INITIAL,
+  _previous: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const session = await requireSession();
+  await requireSession();
 
   const parsed = displayNameSchema.safeParse({
     displayName: formString(formData, "displayName"),

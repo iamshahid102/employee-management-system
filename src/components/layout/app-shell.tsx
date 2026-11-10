@@ -16,6 +16,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { InstallAppButton } from "@/components/pwa/pwa-client";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { initials, cn } from "@/lib/utils";
@@ -148,6 +149,7 @@ function SidebarContent({
             </p>
           </div>
         </div>
+        <InstallAppButton />
         <form action="/auth/signout" method="post">
           <Button
             type="submit"
@@ -171,11 +173,6 @@ export function AppShell({
   children,
 }: AppShellProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const pathname = usePathname();
-
-  useEffect(() => {
-    setMobileOpen(false);
-  }, [pathname]);
 
   useEffect(() => {
     if (!mobileOpen) return;

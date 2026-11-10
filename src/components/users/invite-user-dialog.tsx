@@ -1,7 +1,7 @@
 "use client";
 
 import { UserPlus } from "lucide-react";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useState } from "react";
 
 import { inviteUserAction } from "@/actions/users";
 import { SubmitButton } from "@/components/submit-button";
@@ -32,11 +32,17 @@ const INITIAL: ActionState = { status: "idle" };
 
 export function InviteUserDialog() {
   const [open, setOpen] = useState(false);
-  const [state, formAction] = useActionState(inviteUserAction, INITIAL);
 
-  useEffect(() => {
-    if (state.status === "success") setOpen(false);
-  }, [state]);
+  const submitInvitation = async (
+    previous: ActionState,
+    formData: FormData,
+  ): Promise<ActionState> => {
+    const result = await inviteUserAction(previous, formData);
+    if (result.status === "success") setOpen(false);
+    return result;
+  };
+
+  const [state, formAction] = useActionState(submitInvitation, INITIAL);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

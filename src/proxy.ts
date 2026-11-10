@@ -28,7 +28,11 @@ function isPublicAsset(pathname: string) {
 export async function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
 
-  if (isPublicAsset(pathname) || !isSupabaseConfigured()) {
+  if (
+    isPublicAsset(pathname) ||
+    pathname === "/offline" ||
+    !isSupabaseConfigured()
+  ) {
     return NextResponse.next();
   }
 

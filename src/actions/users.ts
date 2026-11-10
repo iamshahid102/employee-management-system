@@ -14,10 +14,8 @@ import {
 } from "@/lib/validation/auth";
 import { fieldErrors, firstError, formString } from "@/lib/validation/form";
 
-const INITIAL: ActionState = { status: "idle" };
-
 export async function inviteUserAction(
-  _previous: ActionState = INITIAL,
+  _previous: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
   const session = await requireOrganizationSession();
@@ -88,7 +86,7 @@ export async function inviteUserAction(
 }
 
 export async function updateUserRoleAction(
-  _previous: ActionState = INITIAL,
+  _previous: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
   const session = await requireOrganizationSession();
@@ -121,7 +119,7 @@ export async function updateUserRoleAction(
 }
 
 export async function updateUserActiveAction(
-  _previous: ActionState = INITIAL,
+  _previous: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
   const session = await requireOrganizationSession();

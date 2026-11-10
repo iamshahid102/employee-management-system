@@ -18,10 +18,8 @@ import {
   formString,
 } from "@/lib/validation/form";
 
-const INITIAL: ActionState = { status: "idle" };
-
 export async function createOrganizationAction(
-  _previous: ActionState = INITIAL,
+  _previous: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
   const session = await requireSession();
@@ -58,7 +56,7 @@ export async function createOrganizationAction(
 }
 
 export async function updateOrganizationAction(
-  _previous: ActionState = INITIAL,
+  _previous: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
   const session = await requireOrganizationSession();
@@ -98,7 +96,7 @@ export async function updateOrganizationAction(
 }
 
 export async function saveDepartmentAction(
-  _previous: ActionState = INITIAL,
+  _previous: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
   const session = await requireOrganizationSession();
@@ -165,7 +163,7 @@ export async function deleteDepartmentAction(formData: FormData): Promise<void> 
 }
 
 export async function saveLocationAction(
-  _previous: ActionState = INITIAL,
+  _previous: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
   const session = await requireOrganizationSession();

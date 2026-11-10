@@ -19,8 +19,6 @@ import {
 } from "@/lib/validation/form";
 import { EMPLOYEE_COLUMNS, type Employee } from "@/lib/types";
 
-const INITIAL: ActionState = { status: "idle" };
-
 function rawEmployee(formData: FormData) {
   return {
     employeeNumber: formString(formData, "employeeNumber"),
@@ -41,7 +39,7 @@ function rawEmployee(formData: FormData) {
 }
 
 export async function createEmployeeAction(
-  _previous: ActionState = INITIAL,
+  _previous: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
   const session = await requireOrganizationSession();
@@ -100,7 +98,7 @@ export async function createEmployeeAction(
 }
 
 export async function updateEmployeeAction(
-  _previous: ActionState = INITIAL,
+  _previous: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
   const session = await requireOrganizationSession();

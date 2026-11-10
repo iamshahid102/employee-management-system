@@ -1,4 +1,4 @@
-import { Plus, Search } from "lucide-react";
+import { Download, Plus, Search } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -134,14 +134,32 @@ export default async function EmployeesPage({
         title="Employees"
         description="Search, filter and maintain employee records. Access is limited to the people your role allows you to see."
         actions={
-          session.permissions.can_manage_employees ? (
-            <Button asChild>
-              <Link href="/employees/new">
-                <Plus aria-hidden />
-                Add employee
-              </Link>
-            </Button>
-          ) : null
+          <>
+            {session.permissions.can_export ? (
+              <Button asChild variant="outline">
+                <a
+                  href={`/api/employees/export?${new URLSearchParams({
+                    q,
+                    department: departmentId,
+                    location: locationId,
+                    status,
+                  }).toString()}`}
+                  download
+                >
+                  <Download aria-hidden />
+                  Export CSV
+                </a>
+              </Button>
+            ) : null}
+            {session.permissions.can_manage_employees ? (
+              <Button asChild>
+                <Link href="/employees/new">
+                  <Plus aria-hidden />
+                  Add employee
+                </Link>
+              </Button>
+            ) : null}
+          </>
         }
       />
 

@@ -12,10 +12,8 @@ import {
 } from "@/lib/validation/auth";
 import { fieldErrors, firstError, formString } from "@/lib/validation/form";
 
-const INITIAL: ActionState = { status: "idle" };
-
 export async function signInAction(
-  _previous: ActionState = INITIAL,
+  _previous: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
   const parsed = signInSchema.safeParse({
@@ -52,7 +50,7 @@ export async function signInAction(
 }
 
 export async function requestPasswordResetAction(
-  _previous: ActionState = INITIAL,
+  _previous: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
   const parsed = forgotPasswordSchema.safeParse({
@@ -81,7 +79,7 @@ export async function requestPasswordResetAction(
 }
 
 export async function updatePasswordAction(
-  _previous: ActionState = INITIAL,
+  _previous: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
   const parsed = resetPasswordSchema.safeParse({
