@@ -155,6 +155,28 @@ export interface ImportRowPayload {
   end_date: string | null;
 }
 
+export interface DashboardSummary {
+  headcount: number;
+  active: number;
+  probation: number;
+  on_leave: number;
+  inactive: number;
+  departments: number;
+  locations: number;
+  anniversaries: Array<{
+    id: string;
+    name: string;
+    date: string;
+    days_away: number;
+  }>;
+  new_starters: Array<{
+    id: string;
+    name: string;
+    start_date: string;
+    days_ago: number;
+  }>;
+}
+
 export interface Permissions {
   role: AppRole | "none";
   organization_id: string | null;

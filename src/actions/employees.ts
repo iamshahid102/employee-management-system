@@ -84,7 +84,7 @@ export async function createEmployeeAction(
       created_by: session.user.id,
       updated_by: session.user.id,
     })
-    .select(EMPLOYEE_COLUMNS)
+    .select("id")
     .single();
 
   if (error || !created) {
@@ -96,7 +96,7 @@ export async function createEmployeeAction(
 
   revalidatePath("/employees");
   revalidatePath("/dashboard");
-  redirect(`/employees/${(created as Employee).id}`);
+  redirect(`/employees/${created.id}`);
 }
 
 export async function updateEmployeeAction(
