@@ -5,7 +5,7 @@ import { EmployeeForm } from "@/components/employees/employee-form";
 import { Card, CardContent } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/page-header";
 import { requireOrganizationSession } from "@/lib/auth/session";
-import { loadDirectoryOptions } from "@/lib/queries/options";
+import { loadAccountOptions, loadDirectoryOptions } from "@/lib/queries/options";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Add employee" };
@@ -18,7 +18,10 @@ export default async function NewEmployeePage() {
   }
 
   const supabase = await createClient();
-  const { departments, locations, managers } = await loadDirectoryOptions(supabase);
+  const [{ departments, locations, managers }, accounts] = await Promise.all([
+    loadDirectoryOptions(supabase),
+    loadAccountOptions(supabase),
+  ]);
 
   return (
     <div>
@@ -33,6 +36,7 @@ export default async function NewEmployeePage() {
             departments={departments}
             locations={locations}
             managers={managers}
+            accounts={accounts}
             fullAccess
           />
         </CardContent>

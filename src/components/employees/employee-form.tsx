@@ -35,6 +35,7 @@ type EmployeeFormProps = {
   departments: Option[];
   locations: Option[];
   managers: Option[];
+  accounts: Option[];
   fullAccess: boolean;
 };
 
@@ -91,6 +92,7 @@ export function EmployeeForm({
   departments,
   locations,
   managers,
+  accounts,
   fullAccess,
 }: EmployeeFormProps) {
   const [state, formAction] = useActionState(
@@ -187,6 +189,22 @@ export function EmployeeForm({
                 maxLength={80}
                 defaultValue={employee?.last_name}
                 aria-invalid={Boolean(errors.lastName)}
+              />
+            </Field>
+
+            <Field
+              label="Portal account"
+              htmlFor="userId"
+              hint="Links this record to a sign-in account so the employee can see their own details."
+              error={errors.userId?.[0]}
+              className="sm:col-span-2"
+            >
+              <OptionSelect
+                id="userId"
+                name="userId"
+                defaultValue={employee?.user_id}
+                placeholder="Not linked"
+                options={accounts}
               />
             </Field>
           </div>

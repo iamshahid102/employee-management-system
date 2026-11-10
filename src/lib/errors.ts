@@ -22,6 +22,10 @@ const KNOWN_ERRORS: Array<[RegExp, string]> = [
   ],
   [/profiles_org_email_key/i, "A user with that email already exists."],
   [
+    /employees_user_id_key|duplicate key value.*user_id/i,
+    "That sign-in account is already linked to another employee.",
+  ],
+  [
     /Manager assignment would create a cycle|manager hierarchy is too deep/i,
     "That manager assignment would create a reporting cycle.",
   ],

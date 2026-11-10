@@ -8,6 +8,26 @@ export type DirectoryOptions = {
   managers: Option[];
 };
 
+/** Active portal accounts that can be linked to an employee record. */
+export async function loadAccountOptions(
+  supabase: SupabaseClient,
+): Promise<Option[]> {
+  const { data } = await supabase
+    .from("profiles")
+    .select("id, display_name, email")
+    .eq("is_active", true)
+    .order("display_name");
+
+  return ((data ?? []) as Array<{
+    id: string;
+    display_name: string;
+    email: string;
+  }>).map((profile) => ({
+    id: profile.id,
+    name: `${profile.display_name} (${profile.email})`,
+  }));
+}
+
 /** Departments, locations and eligible managers for the current organization. */
 export async function loadDirectoryOptions(
   supabase: SupabaseClient,

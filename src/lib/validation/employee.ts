@@ -63,6 +63,7 @@ export const employeeSchema = z
     departmentId: optionalId,
     locationId: optionalId,
     managerId: optionalId,
+    userId: optionalId,
     employmentType: z.enum(EMPLOYMENT_TYPES, {
       message: "Select an employment type",
     }),

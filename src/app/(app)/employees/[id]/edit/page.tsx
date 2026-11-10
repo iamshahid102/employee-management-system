@@ -5,7 +5,7 @@ import { EmployeeForm } from "@/components/employees/employee-form";
 import { Card, CardContent } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/page-header";
 import { requireOrganizationSession } from "@/lib/auth/session";
-import { loadDirectoryOptions } from "@/lib/queries/options";
+import { loadAccountOptions, loadDirectoryOptions } from "@/lib/queries/options";
 import { createClient } from "@/lib/supabase/server";
 import type { Employee, EmployeeContact } from "@/lib/types";
 
@@ -39,7 +39,10 @@ export default async function EditEmployeePage({
     redirect(`/employees/${id}`);
   }
 
-  const options = await loadDirectoryOptions(supabase);
+  const [options, accounts] = await Promise.all([
+    loadDirectoryOptions(supabase),
+    fullAccess ? loadAccountOptions(supabase) : Promise.resolve([]),
+  ]);
 
   let contact: EmployeeContact | null = null;
   if (fullAccess) {
@@ -65,6 +68,7 @@ export default async function EditEmployeePage({
             departments={options.departments}
             locations={options.locations}
             managers={options.managers.filter((manager) => manager.id !== data.id)}
+            accounts={accounts}
             fullAccess={fullAccess}
           />
         </CardContent>
