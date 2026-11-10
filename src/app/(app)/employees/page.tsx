@@ -41,6 +41,12 @@ function clean(value: string | undefined, max = 80): string {
   return (value ?? "").trim().slice(0, max);
 }
 
+/** Radix selects submit "all" for the unfiltered option; never send that to SQL. */
+function filterValue(value: string | undefined, max = 40): string {
+  const cleaned = clean(value, max);
+  return cleaned === "all" || cleaned === "none" ? "" : cleaned;
+}
+
 function buildHref(params: Record<string, string | undefined>, page: number) {
   const search = new URLSearchParams();
   for (const [key, value] of Object.entries(params)) {
@@ -60,9 +66,16 @@ export default async function EmployeesPage({
   const raw = await searchParams;
 
   const q = clean(typeof raw.q === "string" ? raw.q : undefined);
-  const departmentId = clean(typeof raw.department === "string" ? raw.department : undefined, 40);
-  const locationId = clean(typeof raw.location === "string" ? raw.location : undefined, 40);
-  const status = clean(typeof raw.status === "string" ? raw.status : undefined, 20);
+  const departmentId = filterValue(
+    typeof raw.department === "string" ? raw.department : undefined,
+  );
+  const locationId = filterValue(
+    typeof raw.location === "string" ? raw.location : undefined,
+  );
+  const status = filterValue(
+    typeof raw.status === "string" ? raw.status : undefined,
+    20,
+  );
   const sort = SORTS.some((option) => option.value === raw.sort) ? String(raw.sort) : "name";
   const page = Math.max(1, Number.parseInt(String(raw.page ?? "1"), 10) || 1);
 

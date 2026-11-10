@@ -98,7 +98,16 @@ Every additional user is **invited** from **Users & roles** by an admin (invitat
 which provisions the account and its profile with the correct organization and role.
 For production, disable public sign-ups in Supabase Auth settings so access is invitation-only.
 
-### 6. Run
+### 6. Optional sample data
+
+For local development, `supabase/seed.sql` adds a few departments, locations and employees
+to the first organization. It is safe to re-run and never creates an organization itself.
+
+```bash
+psql "$DATABASE_URL" -f supabase/seed.sql
+```
+
+### 7. Run
 
 ```bash
 npm run dev
@@ -184,6 +193,9 @@ supabase/
 ## Verification before release
 
 - `npm run lint`, `npm run typecheck`, `npm test`, `npm run build`
+- The service worker registers only in production builds. Installability and offline
+  behaviour must therefore be checked against `npm run build && npm start` on `localhost`
+  (a secure context), not against `npm run dev`.
 - Walk the acceptance criteria in plan section 9: employee CRUD, cross-organization denial,
   import preview with per-row errors, non-destructive duplicate handling, authorized export,
   installability and offline privacy.

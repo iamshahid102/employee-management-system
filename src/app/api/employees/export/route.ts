@@ -18,9 +18,13 @@ export async function GET(request: Request) {
 
   const url = new URL(request.url);
   const q = (url.searchParams.get("q") ?? "").trim().slice(0, 80);
-  const departmentId = (url.searchParams.get("department") ?? "").trim();
-  const locationId = (url.searchParams.get("location") ?? "").trim();
-  const status = (url.searchParams.get("status") ?? "").trim();
+  const filter = (name: string) => {
+    const value = (url.searchParams.get(name) ?? "").trim();
+    return value === "all" || value === "none" ? "" : value;
+  };
+  const departmentId = filter("department");
+  const locationId = filter("location");
+  const status = filter("status");
   const columns = parseExportColumns(url.searchParams.get("columns"));
 
   const supabase = await createClient();

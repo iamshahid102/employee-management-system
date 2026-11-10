@@ -108,13 +108,14 @@ create table if not exists public.departments (
   is_active        boolean not null default true,
   created_at       timestamptz not null default now(),
   updated_at       timestamptz not null default now(),
+  -- Declared before the self-referencing FK so the referenced key exists.
+  constraint departments_org_id_key unique (organization_id, id),
   constraint departments_parent_fk
     foreign key (organization_id, parent_id)
     references public.departments (organization_id, id)
     on delete set null,
   constraint departments_parent_not_self
-    check (parent_id is null or parent_id <> id),
-  constraint departments_org_id_key unique (organization_id, id)
+    check (parent_id is null or parent_id <> id)
 );
 
 create unique index if not exists departments_org_name_key
@@ -173,6 +174,8 @@ create table if not exists public.employees (
   updated_by        uuid references auth.users (id) on delete set null,
   created_at        timestamptz not null default now(),
   updated_at        timestamptz not null default now(),
+  -- Declared first: the self-referencing manager FK below depends on it.
+  constraint employees_org_id_key unique (organization_id, id),
   constraint employees_department_fk
     foreign key (organization_id, department_id)
     references public.departments (organization_id, id)
@@ -189,7 +192,6 @@ create table if not exists public.employees (
     check (manager_id is null or manager_id <> id),
   constraint employees_dates_valid
     check (end_date is null or end_date >= start_date),
-  constraint employees_org_id_key unique (organization_id, id),
   constraint employees_user_id_key unique (user_id)
 );
 
