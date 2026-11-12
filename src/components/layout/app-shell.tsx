@@ -20,6 +20,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { InstallAppButton } from "@/components/pwa/pwa-client";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { SIDEBAR_COLLAPSED_COOKIE } from "@/lib/sidebar";
@@ -222,6 +223,10 @@ function SidebarContent({
               </p>
             </div>
           )}
+        </div>
+
+        <div className={cn(collapsed && "flex justify-center")}>
+          <ThemeToggle compact={collapsed} />
         </div>
 
         {collapsed ? null : <InstallAppButton />}

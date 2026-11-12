@@ -1,15 +1,15 @@
 "use client";
 
+import { useTheme } from "next-themes";
 import { Toaster as Sonner, type ToasterProps } from "sonner";
 
-/**
- * Toast renderer. The app has no user-selectable theme yet, so the system
- * preference is used and the token-based classes adapt automatically.
- */
+/** Toast renderer that follows the app-wide light/dark/system choice. */
 function Toaster(props: ToasterProps) {
+  const { theme } = useTheme();
+
   return (
     <Sonner
-      theme="system"
+      theme={(theme ?? "system") as ToasterProps["theme"]}
       className="toaster group"
       position="bottom-right"
       toastOptions={{

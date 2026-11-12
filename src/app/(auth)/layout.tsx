@@ -1,10 +1,12 @@
 import { ShieldCheck } from "lucide-react";
 import Link from "next/link";
 
+import { ThemeToggle } from "@/components/theme-toggle";
+
 export default function AuthLayout({ children }: LayoutProps<"/">) {
   return (
     <div className="flex min-h-screen flex-col bg-muted/40">
-      <header className="px-6 py-6">
+      <header className="flex items-center justify-between gap-4 px-6 py-6">
         <Link
           href="/"
           className="inline-flex items-center gap-2 text-sm font-semibold"
@@ -14,6 +16,7 @@ export default function AuthLayout({ children }: LayoutProps<"/">) {
           </span>
           Employee Management
         </Link>
+        <ThemeToggle compact />
       </header>
 
       <main className="flex flex-1 items-start justify-center px-6 pb-16 sm:items-center">

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
 import { SetupForm } from "@/components/setup/setup-form";
+import { ThemeToggle } from "@/components/theme-toggle";
 import {
   Card,
   CardContent,
@@ -22,6 +23,10 @@ export default async function SetupPage() {
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-lg flex-col justify-center gap-6 px-6 py-16">
+      <div className="flex justify-end">
+        <ThemeToggle compact />
+      </div>
+
       <header className="space-y-2">
         <p className="text-sm font-medium text-primary">Welcome</p>
         <h1 className="text-2xl font-semibold tracking-tight">
