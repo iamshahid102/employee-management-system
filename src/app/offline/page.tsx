@@ -5,7 +5,7 @@ export const metadata: Metadata = { title: "Offline" };
 
 export default function OfflinePage() {
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center gap-4 px-6 text-center">
+    <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col items-center justify-center gap-4 px-4 text-center sm:px-6">
       <span className="flex size-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
         <WifiOff aria-hidden className="size-6" />
       </span>

@@ -72,7 +72,7 @@ export function DepartmentManager({ departments }: { departments: Department[] }
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-muted-foreground">
           {departments.length} department{departments.length === 1 ? "" : "s"}
         </p>
@@ -87,7 +87,7 @@ export function DepartmentManager({ departments }: { departments: Department[] }
           No departments yet. Add one to group your employees.
         </p>
       ) : (
-        <div className="rounded-lg border">
+        <div className="hidden rounded-lg border md:block">
           <Table>
             <TableHeader>
               <TableRow>
@@ -139,6 +139,50 @@ export function DepartmentManager({ departments }: { departments: Department[] }
             </TableBody>
           </Table>
         </div>
+      )}
+
+      {departments.length === 0 ? null : (
+        <ul className="space-y-3 md:hidden">
+          {departments.map((department) => (
+            <li key={department.id} className="rounded-lg border p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="font-medium break-words">{department.name}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {department.parent_id
+                      ? `Parent: ${names.get(department.parent_id) ?? "—"}`
+                      : "Top-level department"}
+                  </p>
+                </div>
+                {department.is_active ? (
+                  <Badge variant="success">Active</Badge>
+                ) : (
+                  <Badge variant="muted">Inactive</Badge>
+                )}
+              </div>
+              <div className="mt-3 flex items-center justify-end gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => openEdit(department)}
+                  aria-label={`Edit ${department.name}`}
+                >
+                  <Pencil aria-hidden />
+                  Edit
+                </Button>
+                <ConfirmAction
+                  triggerLabel="Delete"
+                  title={`Delete ${department.name}?`}
+                  description="Departments that are still assigned to employees cannot be deleted. Deactivate them instead."
+                  confirmLabel="Delete department"
+                  action={deleteDepartmentAction}
+                  fields={{ id: department.id }}
+                  variant="ghost"
+                />
+              </div>
+            </li>
+          ))}
+        </ul>
       )}
 
       <Dialog open={open} onOpenChange={setOpen}>

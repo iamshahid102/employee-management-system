@@ -49,7 +49,7 @@ export default async function ProfilePage() {
             <dl className="grid gap-3 text-sm">
               <div>
                 <dt className="text-xs text-muted-foreground">Email</dt>
-                <dd>{session.profile.email}</dd>
+                <dd className="break-all">{session.profile.email}</dd>
               </div>
               <div>
                 <dt className="text-xs text-muted-foreground">Role</dt>

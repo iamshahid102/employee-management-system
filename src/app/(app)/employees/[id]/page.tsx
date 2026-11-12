@@ -124,7 +124,7 @@ export default async function EmployeeDetailPage({
             </h1>
             <StatusBadge status={employee.status} />
           </div>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm break-all text-muted-foreground">
             {employee.employee_number} · {employee.work_email}
           </p>
         </div>

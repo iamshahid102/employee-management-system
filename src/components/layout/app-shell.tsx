@@ -179,7 +179,7 @@ function SidebarContent({
               aria-label={collapsed ? item.label : undefined}
               className={cn(
                 "group relative flex items-center gap-3 rounded-md text-sm font-medium transition-colors",
-                collapsed ? "size-10 justify-center" : "px-3 py-2",
+                collapsed ? "size-10 justify-center" : "px-3 py-2.5",
                 active
                   ? "bg-primary/10 text-primary"
                   : "text-muted-foreground hover:bg-muted hover:text-foreground",
@@ -271,7 +271,15 @@ export function AppShell({
       if (event.key === "Escape") setMobileOpen(false);
     };
     document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
+
+    // Keep the page behind the drawer from scrolling on touch devices.
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = previousOverflow;
+    };
   }, [mobileOpen]);
 
   function toggleSidebar() {
@@ -281,7 +289,7 @@ export function AppShell({
   }
 
   return (
-    <div className="flex min-h-screen flex-col lg:flex-row">
+    <div className="flex min-h-dvh flex-col lg:flex-row">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground"
@@ -295,7 +303,7 @@ export function AppShell({
           collapsed ? "w-16" : "w-64",
         )}
       >
-        <div className="sticky top-0 h-screen">
+        <div className="sticky top-0 h-dvh">
           <SidebarContent
             organizationName={organizationName}
             user={user}
@@ -317,7 +325,10 @@ export function AppShell({
           >
             <Menu aria-hidden />
           </Button>
-          <p className="truncate text-sm font-semibold">{organizationName}</p>
+          <p className="min-w-0 flex-1 truncate text-sm font-semibold">
+            {organizationName}
+          </p>
+          <ThemeToggle compact />
         </header>
 
         {mobileOpen ? (
@@ -332,7 +343,7 @@ export function AppShell({
               role="dialog"
               aria-modal="true"
               aria-label="Navigation"
-              className="absolute inset-y-0 left-0 w-72 max-w-[85vw] overflow-y-auto border-r bg-card shadow-xl"
+              className="absolute inset-y-0 left-0 w-[min(18rem,85vw)] overflow-y-auto overscroll-contain border-r bg-card shadow-xl"
             >
               <div className="flex justify-end p-2">
                 <Button

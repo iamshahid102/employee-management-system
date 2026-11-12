@@ -66,7 +66,9 @@ export default async function ImportPreviewPage({
           Back to imports
         </Link>
         <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-2xl font-semibold tracking-tight">{job.filename}</h1>
+          <h1 className="min-w-0 text-2xl font-semibold tracking-tight break-all">
+            {job.filename}
+          </h1>
           <Badge
             variant={
               job.status === "completed"
@@ -133,7 +135,7 @@ export default async function ImportPreviewPage({
                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-16">Row</TableHead>
-                    <TableHead className="w-40">Column</TableHead>
+                    <TableHead className="w-28 sm:w-40">Column</TableHead>
                     <TableHead>Problem</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -170,8 +172,8 @@ export default async function ImportPreviewPage({
                     <TableHead className="w-16">Row</TableHead>
                     <TableHead>Employee</TableHead>
                     <TableHead>Email</TableHead>
-                    <TableHead>Department</TableHead>
-                    <TableHead>Start</TableHead>
+                    <TableHead className="hidden sm:table-cell">Department</TableHead>
+                    <TableHead className="hidden sm:table-cell">Start</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -184,11 +186,13 @@ export default async function ImportPreviewPage({
                           {row.employee_number}
                         </span>
                       </TableCell>
-                      <TableCell className="text-sm">{row.work_email}</TableCell>
-                      <TableCell className="text-sm">
+                      <TableCell className="text-sm break-all">{row.work_email}</TableCell>
+                      <TableCell className="hidden text-sm sm:table-cell">
                         {row.department_name ?? "—"}
                       </TableCell>
-                      <TableCell className="text-sm">{row.start_date}</TableCell>
+                      <TableCell className="hidden text-sm sm:table-cell">
+                        {row.start_date}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

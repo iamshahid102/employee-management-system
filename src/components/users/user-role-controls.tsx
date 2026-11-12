@@ -61,13 +61,13 @@ export function UserRoleControls({
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
       <Select
         defaultValue={profile.role}
         onValueChange={(value) => changeRole(value as AppRole)}
         disabled={pending}
       >
-        <SelectTrigger size="sm" className="w-[190px]">
+        <SelectTrigger size="sm" className="w-full sm:w-[190px]">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -84,15 +84,18 @@ export function UserRoleControls({
         size="sm"
         onClick={toggleActive}
         disabled={pending}
+        className="w-full sm:w-auto"
       >
         {profile.is_active ? "Deactivate" : "Activate"}
       </Button>
 
-      {profile.is_active ? (
-        <Badge variant="success">Active</Badge>
-      ) : (
-        <Badge variant="muted">Inactive</Badge>
-      )}
+      <div>
+        {profile.is_active ? (
+          <Badge variant="success">Active</Badge>
+        ) : (
+          <Badge variant="muted">Inactive</Badge>
+        )}
+      </div>
     </div>
   );
 }

@@ -31,10 +31,10 @@ const steps = [
 
 export function ConfigurationNotice() {
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col justify-center gap-8 px-6 py-16">
+    <main className="mx-auto flex min-h-dvh w-full max-w-3xl flex-col justify-center gap-8 px-4 py-12 sm:px-6 sm:py-16">
       <header className="space-y-3">
         <p className="text-sm font-medium text-primary">Employee Management System</p>
-        <h1 className="text-3xl font-semibold tracking-tight">
+        <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
           Connect a Supabase project to get started
         </h1>
         <p className="text-muted-foreground">

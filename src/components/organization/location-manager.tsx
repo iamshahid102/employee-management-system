@@ -50,7 +50,7 @@ export function LocationManager({ locations }: { locations: WorkLocation[] }) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-muted-foreground">
           {locations.length} location{locations.length === 1 ? "" : "s"}
         </p>
@@ -71,7 +71,7 @@ export function LocationManager({ locations }: { locations: WorkLocation[] }) {
           No locations yet. Add offices or remote regions to assign employees.
         </p>
       ) : (
-        <div className="rounded-lg border">
+        <div className="hidden rounded-lg border md:block">
           <Table>
             <TableHeader>
               <TableRow>
@@ -130,6 +130,56 @@ export function LocationManager({ locations }: { locations: WorkLocation[] }) {
             </TableBody>
           </Table>
         </div>
+      )}
+
+      {locations.length === 0 ? null : (
+        <ul className="space-y-3 md:hidden">
+          {locations.map((location) => (
+            <li key={location.id} className="rounded-lg border p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="font-medium break-words">{location.name}</p>
+                  <p className="text-xs break-words text-muted-foreground">
+                    {location.address ?? "No address"}
+                  </p>
+                </div>
+                {location.is_active ? (
+                  <Badge variant="success">Active</Badge>
+                ) : (
+                  <Badge variant="muted">Inactive</Badge>
+                )}
+              </div>
+              {location.timezone ? (
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Timezone: {location.timezone}
+                </p>
+              ) : null}
+              <div className="mt-3 flex items-center justify-end gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setEditing(location);
+                    setOpen(true);
+                  }}
+                  aria-label={`Edit ${location.name}`}
+                >
+                  <Pencil aria-hidden />
+                  Edit
+                </Button>
+                <ConfirmAction
+                  triggerLabel="Delete"
+                  title={`Delete ${location.name}?`}
+                  description="Locations that are still assigned to employees cannot be deleted. Deactivate them instead."
+                  confirmLabel="Delete location"
+                  action={deleteLocationAction}
+                  fields={{ id: location.id }}
+                  variant="ghost"
+                />
+              </div>
+            </li>
+          ))}
+        </ul>
       )}
 
       <Dialog open={open} onOpenChange={setOpen}>

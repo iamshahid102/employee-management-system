@@ -42,7 +42,7 @@ export default async function LoginPage({
       <CardContent className="space-y-6">
         <LoginForm next={params.next} initialError={params.error} />
 
-        <div className="flex items-center justify-between text-sm">
+        <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
           <Link
             href="/forgot-password"
             className="font-medium text-primary underline-offset-4 hover:underline"
