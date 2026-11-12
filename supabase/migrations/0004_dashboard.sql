@@ -11,8 +11,16 @@ stable
 security invoker
 set search_path = public
 as $$
+-- Only the columns granted to `authenticated` may be selected here: 0003
+-- revokes table-wide SELECT on public.employees and grants an explicit column
+-- list, so `select e.*` would fail with "permission denied for table employees".
 with scope as (
-  select e.*
+  select
+    e.id,
+    e.first_name,
+    e.last_name,
+    e.status,
+    e.start_date
   from public.employees e
   where e.organization_id = public.auth_org_id()
 ),
