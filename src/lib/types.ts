@@ -14,6 +14,10 @@ export type EmploymentStatus =
   | "terminated"
   | "inactive";
 
+export type AttendanceStatus = "present" | "remote" | "on_leave" | "absent";
+
+export type AttendanceSource = "self" | "hr";
+
 export type ImportStatus =
   | "pending_review"
   | "processing"
@@ -38,6 +42,21 @@ export interface Profile {
   is_active: boolean;
   created_at: string;
   updated_at?: string;
+}
+
+export const ATTENDANCE_COLUMNS =
+  "id, organization_id, employee_id, work_date, status, note, source, created_at, updated_at";
+
+export interface AttendanceRecord {
+  id: string;
+  organization_id: string;
+  employee_id: string;
+  work_date: string;
+  status: AttendanceStatus;
+  note: string | null;
+  source: AttendanceSource;
+  created_at: string;
+  updated_at: string;
 }
 
 /** Readable employee columns — personal contact fields are excluded by grants. */
@@ -192,6 +211,9 @@ export interface Permissions {
   can_import: boolean;
   can_export: boolean;
   can_view_audit: boolean;
+  can_mark_attendance: boolean;
+  can_view_team_attendance: boolean;
+  can_manage_attendance: boolean;
 }
 
 export const NO_PERMISSIONS: Permissions = {
@@ -204,6 +226,9 @@ export const NO_PERMISSIONS: Permissions = {
   can_import: false,
   can_export: false,
   can_view_audit: false,
+  can_mark_attendance: false,
+  can_view_team_attendance: false,
+  can_manage_attendance: false,
 };
 
 export const ROLE_LABELS: Record<AppRole, string> = {
@@ -247,6 +272,30 @@ export const STATUS_BADGE_VARIANT: Record<
   terminated: "destructive",
   inactive: "muted",
 };
+
+export const ATTENDANCE_STATUS_LABELS: Record<AttendanceStatus, string> = {
+  present: "In office",
+  remote: "Remote",
+  on_leave: "On leave",
+  absent: "Absent",
+};
+
+export const ATTENDANCE_BADGE_VARIANT: Record<
+  AttendanceStatus,
+  "success" | "default" | "muted" | "destructive"
+> = {
+  present: "success",
+  remote: "default",
+  on_leave: "muted",
+  absent: "destructive",
+};
+
+/** Statuses an employee may choose for themselves; "absent" is staff-only. */
+export const SELF_ATTENDANCE_STATUSES: AttendanceStatus[] = [
+  "present",
+  "remote",
+  "on_leave",
+];
 
 export const IMPORT_STATUS_LABELS: Record<ImportStatus, string> = {
   pending_review: "Awaiting confirmation",

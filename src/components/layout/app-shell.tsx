@@ -2,6 +2,7 @@
 
 import {
   Building2,
+  CalendarCheck,
   ClipboardList,
   LayoutDashboard,
   LogOut,
@@ -49,6 +50,13 @@ function navigation(permissions: Permissions): NavItem[] {
       label: "Employees",
       icon: Users,
       visible: true,
+    },
+    {
+      href: "/attendance",
+      label: "Attendance",
+      icon: CalendarCheck,
+      visible:
+        permissions.can_mark_attendance || permissions.can_view_team_attendance,
     },
     {
       href: "/organization",

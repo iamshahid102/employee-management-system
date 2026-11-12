@@ -344,6 +344,59 @@ async function insertEmployees(rows, organizationId, departments, locations, cre
   }
 
   log("Reporting lines linked.");
+  return idByNumber;
+}
+
+/**
+ * Demo attendance for the last few working days, so the attendance page has
+ * something to show. Skipped quietly when migration 0005 has not been applied.
+ */
+async function seedAttendance(organizationId, idByNumber) {
+  const isoFormatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone: ORG_TIMEZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+
+  const rows = [];
+  for (let daysBack = 0; daysBack < 6; daysBack += 1) {
+    const day = new Date(Date.now() - daysBack * 86_400_000);
+    const iso = isoFormatter.format(day);
+    const weekday = new Date(`${iso}T00:00:00Z`).getUTCDay();
+    if (weekday === 0 || weekday === 6) continue;
+
+    [...idByNumber.entries()].forEach(([employeeNumber, employeeId], index) => {
+      const status =
+        employeeNumber === "EMP-009"
+          ? "on_leave"
+          : index % 3 === 1
+            ? "remote"
+            : "present";
+      rows.push({
+        organization_id: organizationId,
+        employee_id: employeeId,
+        work_date: iso,
+        status,
+        note: null,
+        source: "self",
+      });
+    });
+  }
+
+  const { error } = await admin
+    .from("attendance_records")
+    .upsert(rows, { onConflict: "organization_id,employee_id,work_date" });
+
+  if (error) {
+    if (/attendance_records/.test(error.message)) {
+      log("\nAttendance skipped: apply supabase/migrations/0005_attendance.sql first.");
+      return;
+    }
+    throw error;
+  }
+
+  log(`Attendance:   ${rows.length} demo entries`);
 }
 
 async function main() {
@@ -386,7 +439,15 @@ async function main() {
   // Managers must be inserted before their reports, so keep the array ordered.
   const allRows = [...employeeRows, ...EXTRA_EMPLOYEES];
   await resetDemoEmployees(allRows, organizationId);
-  await insertEmployees(allRows, organizationId, departments, locations, userIds.admin);
+  const employeeIds = await insertEmployees(
+    allRows,
+    organizationId,
+    departments,
+    locations,
+    userIds.admin,
+  );
+
+  await seedAttendance(organizationId, employeeIds);
 
   log("\n--- Demo logins (password is the same for all) ---");
   for (const user of USERS) {
