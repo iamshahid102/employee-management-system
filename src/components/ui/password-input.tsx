@@ -22,7 +22,12 @@ export function PasswordInput({
       <Input
         {...props}
         type={visible ? "text" : "password"}
-        className={cn("pr-10", className)}
+        className={cn(
+          // Room for the toggle, and hide the native reveal control that Edge
+          // and IE add (it would sit on top of our own button).
+          "pr-9 [&::-ms-clear]:hidden [&::-ms-reveal]:hidden",
+          className,
+        )}
       />
       <button
         type="button"
@@ -31,7 +36,7 @@ export function PasswordInput({
         aria-pressed={visible}
         aria-controls={props.id}
         title={visible ? "Hide password" : "Show password"}
-        className="absolute inset-y-0 right-0 flex w-10 items-center justify-center rounded-r-md text-muted-foreground transition-colors outline-none hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/40"
+        className="absolute top-1/2 right-1 flex size-7 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground transition-colors outline-none hover:bg-muted hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/40"
       >
         {visible ? (
           <EyeOff aria-hidden className="size-4" />
