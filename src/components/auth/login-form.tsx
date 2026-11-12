@@ -7,6 +7,7 @@ import { SubmitButton } from "@/components/submit-button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import type { ActionState } from "@/lib/errors";
 
 const INITIAL: ActionState = { status: "idle" };
@@ -63,10 +64,9 @@ export function LoginForm({
         required
         error={state.fieldErrors?.password?.[0]}
       >
-        <Input
+        <PasswordInput
           id="password"
           name="password"
-          type="password"
           autoComplete="current-password"
           required
           aria-invalid={Boolean(state.fieldErrors?.password)}

@@ -6,7 +6,7 @@ import { updatePasswordAction } from "@/actions/auth";
 import { SubmitButton } from "@/components/submit-button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Field } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import type { ActionState } from "@/lib/errors";
 
 const INITIAL: ActionState = { status: "idle" };
@@ -30,10 +30,9 @@ export function ResetPasswordForm() {
         hint="At least 8 characters."
         error={state.fieldErrors?.password?.[0]}
       >
-        <Input
+        <PasswordInput
           id="password"
           name="password"
-          type="password"
           autoComplete="new-password"
           minLength={8}
           required
@@ -47,10 +46,9 @@ export function ResetPasswordForm() {
         required
         error={state.fieldErrors?.confirmPassword?.[0]}
       >
-        <Input
+        <PasswordInput
           id="confirmPassword"
           name="confirmPassword"
-          type="password"
           autoComplete="new-password"
           minLength={8}
           required
