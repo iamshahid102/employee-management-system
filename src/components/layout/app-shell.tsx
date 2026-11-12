@@ -7,6 +7,8 @@ import {
   LayoutDashboard,
   LogOut,
   Menu,
+  PanelLeftClose,
+  PanelLeftOpen,
   ShieldCheck,
   UploadCloud,
   UserRound,
@@ -20,6 +22,7 @@ import { useEffect, useState } from "react";
 import { InstallAppButton } from "@/components/pwa/pwa-client";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { SIDEBAR_COLLAPSED_COOKIE } from "@/lib/sidebar";
 import { initials, cn } from "@/lib/utils";
 import { ROLE_LABELS, type AppRole, type Permissions } from "@/lib/types";
 
@@ -34,6 +37,7 @@ type AppShellProps = {
   organizationName: string;
   user: { displayName: string; email: string; role: AppRole };
   permissions: Permissions;
+  defaultCollapsed: boolean;
   children: React.ReactNode;
 };
 
@@ -99,29 +103,70 @@ function SidebarContent({
   organizationName,
   user,
   permissions,
+  collapsed,
+  onToggle,
   onNavigate,
 }: {
   organizationName: string;
   user: AppShellProps["user"];
   permissions: Permissions;
+  collapsed: boolean;
+  /** Provided only on desktop; the mobile drawer is always expanded. */
+  onToggle?: () => void;
   onNavigate?: () => void;
 }) {
   const pathname = usePathname();
   const items = navigation(permissions).filter((item) => item.visible);
 
   return (
-    <div className="flex h-full flex-col gap-6 p-4">
-      <div className="flex items-center gap-2 px-2 py-1">
-        <span className="flex size-9 items-center justify-center rounded-md bg-primary text-primary-foreground">
+    <div
+      className={cn(
+        "flex h-full flex-col gap-4 p-3",
+        collapsed && "items-center px-2",
+      )}
+    >
+      <div
+        className={cn(
+          "flex w-full items-center gap-2",
+          collapsed ? "flex-col" : "px-1",
+        )}
+      >
+        <span
+          className="flex size-9 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground"
+          title={collapsed ? organizationName : undefined}
+        >
           <ShieldCheck aria-hidden className="size-4" />
         </span>
-        <div className="min-w-0">
-          <p className="truncate text-sm font-semibold">{organizationName}</p>
-          <p className="truncate text-xs text-muted-foreground">Employee management</p>
-        </div>
+
+        {collapsed ? null : (
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-semibold">{organizationName}</p>
+            <p className="truncate text-xs text-muted-foreground">
+              Employee management
+            </p>
+          </div>
+        )}
+
+        {onToggle ? (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onToggle}
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            aria-expanded={!collapsed}
+            title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            className={cn("shrink-0 text-muted-foreground", collapsed && "mt-1")}
+          >
+            {collapsed ? (
+              <PanelLeftOpen aria-hidden />
+            ) : (
+              <PanelLeftClose aria-hidden />
+            )}
+          </Button>
+        ) : null}
       </div>
 
-      <nav aria-label="Main" className="flex flex-1 flex-col gap-1">
+      <nav aria-label="Main" className="flex w-full flex-1 flex-col gap-1">
         {items.map((item) => {
           const active = isActive(pathname, item.href);
           return (
@@ -130,43 +175,74 @@ function SidebarContent({
               href={item.href}
               onClick={onNavigate}
               aria-current={active ? "page" : undefined}
+              aria-label={collapsed ? item.label : undefined}
               className={cn(
-                "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                "group relative flex items-center gap-3 rounded-md text-sm font-medium transition-colors",
+                collapsed ? "size-10 justify-center" : "px-3 py-2",
                 active
                   ? "bg-primary/10 text-primary"
                   : "text-muted-foreground hover:bg-muted hover:text-foreground",
               )}
             >
-              <item.icon aria-hidden className="size-4" />
-              {item.label}
+              <item.icon aria-hidden className="size-4 shrink-0" />
+              {collapsed ? (
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute top-1/2 left-full z-50 ml-2 -translate-y-1/2 rounded-md border bg-popover px-2 py-1 text-xs font-medium whitespace-nowrap text-popover-foreground opacity-0 shadow-md transition-opacity duration-150 group-focus-visible:opacity-100 group-hover:opacity-100"
+                >
+                  {item.label}
+                </span>
+              ) : (
+                <span className="truncate">{item.label}</span>
+              )}
             </Link>
           );
         })}
       </nav>
 
-      <div className="space-y-3">
+      <div className="w-full space-y-3">
         <Separator />
-        <div className="flex items-center gap-3 px-2">
-          <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-semibold">
+        <div
+          className={cn(
+            "flex items-center gap-3",
+            collapsed ? "justify-center" : "px-2",
+          )}
+        >
+          <span
+            className="flex size-9 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-semibold"
+            title={collapsed ? `${user.displayName} · ${ROLE_LABELS[user.role]}` : undefined}
+          >
             {initials(user.displayName)}
           </span>
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium">{user.displayName}</p>
-            <p className="truncate text-xs text-muted-foreground">
-              {ROLE_LABELS[user.role]}
-            </p>
-          </div>
+          {collapsed ? null : (
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-medium">{user.displayName}</p>
+              <p className="truncate text-xs text-muted-foreground">
+                {ROLE_LABELS[user.role]}
+              </p>
+            </div>
+          )}
         </div>
-        <InstallAppButton />
-        <form action="/auth/signout" method="post">
+
+        {collapsed ? null : <InstallAppButton />}
+
+        <form
+          action="/auth/signout"
+          method="post"
+          className={cn(collapsed && "flex justify-center")}
+        >
           <Button
             type="submit"
             variant="ghost"
-            size="sm"
-            className="w-full justify-start text-muted-foreground"
+            size={collapsed ? "icon" : "sm"}
+            aria-label={collapsed ? "Sign out" : undefined}
+            title={collapsed ? "Sign out" : undefined}
+            className={cn(
+              !collapsed && "w-full justify-start text-muted-foreground",
+            )}
           >
             <LogOut aria-hidden />
-            Sign out
+            {collapsed ? null : "Sign out"}
           </Button>
         </form>
       </div>
@@ -178,9 +254,11 @@ export function AppShell({
   organizationName,
   user,
   permissions,
+  defaultCollapsed,
   children,
 }: AppShellProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(defaultCollapsed);
 
   useEffect(() => {
     if (!mobileOpen) return;
@@ -191,6 +269,12 @@ export function AppShell({
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [mobileOpen]);
 
+  function toggleSidebar() {
+    const next = !collapsed;
+    setCollapsed(next);
+    document.cookie = `${SIDEBAR_COLLAPSED_COOKIE}=${next ? "1" : "0"}; path=/; max-age=31536000; samesite=lax`;
+  }
+
   return (
     <div className="flex min-h-screen flex-col lg:flex-row">
       <a
@@ -200,12 +284,19 @@ export function AppShell({
         Skip to content
       </a>
 
-      <aside className="hidden w-64 shrink-0 border-r bg-card lg:block">
+      <aside
+        className={cn(
+          "hidden shrink-0 border-r bg-card transition-[width] duration-200 ease-out lg:block",
+          collapsed ? "w-16" : "w-64",
+        )}
+      >
         <div className="sticky top-0 h-screen">
           <SidebarContent
             organizationName={organizationName}
             user={user}
             permissions={permissions}
+            collapsed={collapsed}
+            onToggle={toggleSidebar}
           />
         </div>
       </aside>
@@ -252,6 +343,7 @@ export function AppShell({
                 organizationName={organizationName}
                 user={user}
                 permissions={permissions}
+                collapsed={false}
                 onNavigate={() => setMobileOpen(false)}
               />
             </div>
