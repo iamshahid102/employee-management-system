@@ -1,5 +1,6 @@
 import type { User } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
+import { cache } from "react";
 
 import { isSupabaseConfigured } from "@/lib/env";
 import { createClient } from "@/lib/supabase/server";
@@ -17,8 +18,11 @@ const PROFILE_COLUMNS =
 /**
  * Resolve the signed-in user, their profile and their permission summary.
  * Returns null when there is no valid, active session.
+ *
+ * Cached per request so a layout and its page do not repeat the same auth and
+ * permission round trips during one navigation.
  */
-export async function getSession(): Promise<CurrentSession | null> {
+export const getSession = cache(async (): Promise<CurrentSession | null> => {
   if (!isSupabaseConfigured()) return null;
 
   const supabase = await createClient();
@@ -45,7 +49,7 @@ export async function getSession(): Promise<CurrentSession | null> {
   } satisfies Permissions;
 
   return { user, profile, permissions };
-}
+});
 
 /** Session for pages/actions that must be signed in. */
 export async function requireSession(): Promise<CurrentSession> {
